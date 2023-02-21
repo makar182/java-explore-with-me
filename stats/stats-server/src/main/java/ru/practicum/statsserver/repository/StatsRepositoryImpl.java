@@ -27,17 +27,17 @@ public class StatsRepositoryImpl implements StatsRepository {
 
         if (uris == null) {
             if (unique) {
-                sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri";
+                sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
             } else {
-                sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri";
+                sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
             }
             result = jdbcTemplate.query(sql, this::makeStatsSummary, Timestamp.valueOf(start), Timestamp.valueOf(end));
         } else {
             String inSql = String.join(",", Collections.nCopies(uris.size(), "?"));
             if (unique) {
-                sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri", inSql);
+                sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
             } else {
-                sql = String.format("SELECT app, uri, count(1) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri", inSql);
+                sql = String.format("SELECT app, uri, count(1) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
             }
             params.add(Timestamp.valueOf(start));
             params.add(Timestamp.valueOf(end));
