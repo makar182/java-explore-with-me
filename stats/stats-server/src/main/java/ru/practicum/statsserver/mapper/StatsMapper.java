@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StatsMapper {
     public static List<GetStatsResponseDto> toGetStatsResponseDtoList(List<StatsSummary> stats) {
-        if(stats.isEmpty()) return List.of();
+        if (stats.isEmpty()) return List.of();
 
         List<GetStatsResponseDto> result = new ArrayList<>();
         for (StatsSummary stat : stats) {

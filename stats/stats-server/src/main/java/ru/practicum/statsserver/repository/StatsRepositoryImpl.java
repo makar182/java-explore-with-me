@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
-public class StatsRepositoryImpl implements StatsRepository{
+public class StatsRepositoryImpl implements StatsRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public StatsRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -25,8 +25,8 @@ public class StatsRepositoryImpl implements StatsRepository{
         List<StatsSummary> result = new ArrayList<>();
         List<Object> params = new ArrayList<>();
 
-        if(uris == null) {
-            if(unique) {
+        if (uris == null) {
+            if (unique) {
                 sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri";
             } else {
                 sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri";
@@ -34,7 +34,7 @@ public class StatsRepositoryImpl implements StatsRepository{
             result = jdbcTemplate.query(sql, this::makeStatsSummary, Timestamp.valueOf(start), Timestamp.valueOf(end));
         } else {
             String inSql = String.join(",", Collections.nCopies(uris.size(), "?"));
-            if(unique) {
+            if (unique) {
                 sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri", inSql);
             } else {
                 sql = String.format("SELECT app, uri, count(1) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri", inSql);

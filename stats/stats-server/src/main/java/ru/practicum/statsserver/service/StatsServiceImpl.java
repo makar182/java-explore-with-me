@@ -9,7 +9,7 @@ import ru.practicum.statsserver.repository.StatsRepository;
 import java.util.List;
 
 @Service
-public class StatsServiceImpl implements StatsService{
+public class StatsServiceImpl implements StatsService {
     private final StatsRepository statsRepository;
 
     public StatsServiceImpl(StatsRepository statsRepository) {
