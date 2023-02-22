@@ -9,6 +9,7 @@ import ru.practicum.statsserver.model.StatsSummary;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -20,27 +21,31 @@ public class StatsRepositoryImpl implements StatsRepository {
     }
 
     @Override
-    public List<StatsSummary> getStats(String start, String end, List<String> uris, Boolean unique) {
+    public List<StatsSummary> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         String sql;
-        List<StatsSummary> result = new ArrayList<>();
+        List<StatsSummary> result;
         List<Object> params = new ArrayList<>();
 
         if (uris == null) {
             if (unique) {
-                sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
+                sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats " +
+                        "WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
             } else {
-                sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
+                sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp " +
+                        "BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
             }
             result = jdbcTemplate.query(sql, this::makeStatsSummary, Timestamp.valueOf(start), Timestamp.valueOf(end));
         } else {
             String inSql = String.join(",", Collections.nCopies(uris.size(), "?"));
             if (unique) {
-                sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
+                sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats " +
+                        "WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
             } else {
-                sql = String.format("SELECT app, uri, count(1) cnt FROM stats WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
+                sql = String.format("SELECT app, uri, count(1) cnt FROM stats " +
+                        "WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
             }
-            params.add(Timestamp.valueOf(start));
-            params.add(Timestamp.valueOf(end));
+            params.add(start);
+            params.add(end);
             params.addAll(uris);
             result = jdbcTemplate.query(sql, this::makeStatsSummary, params.toArray());
         }

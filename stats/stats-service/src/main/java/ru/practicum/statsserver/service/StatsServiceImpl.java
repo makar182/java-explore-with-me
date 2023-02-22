@@ -6,6 +6,7 @@ import ru.practicum.statsdto.HitRequestDto;
 import ru.practicum.statsserver.mapper.StatsMapper;
 import ru.practicum.statsserver.repository.StatsRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<GetStatsResponseDto> getStats(String start, String end, List<String> uris, Boolean unique) {
+    public List<GetStatsResponseDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         return StatsMapper.toGetStatsResponseDtoList(statsRepository.getStats(start, end, uris, unique));
     }
 

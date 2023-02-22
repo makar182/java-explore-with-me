@@ -15,13 +15,12 @@ import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
-    //private static final String API_PREFIX = "/bookings";
 
     @Autowired
     public StatsClient(@Value("${stats-client.uri}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl /*+ API_PREFIX*/))
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
