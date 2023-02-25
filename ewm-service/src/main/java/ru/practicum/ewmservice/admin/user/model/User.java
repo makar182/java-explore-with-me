@@ -1,7 +1,6 @@
-package ru.practicum.ewmservice.category.model;
+package ru.practicum.ewmservice.admin.user.model;
 
 import lombok.*;
-import ru.practicum.ewmservice.admin.user.model.User;
 
 import javax.persistence.*;
 
@@ -9,16 +8,15 @@ import javax.persistence.*;
 @Setter
 @Builder
 @Entity
-@Table(name = "categories")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User creator;
+    @Column(name = "email")
+    private String email;
 }
