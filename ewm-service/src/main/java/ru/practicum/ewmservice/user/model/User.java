@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice.admin.user.model;
+package ru.practicum.ewmservice.user.model;
 
 import lombok.*;
 
@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
+@ToString
 @Builder
 @Entity
 @Table(name = "users")

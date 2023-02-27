@@ -1,13 +1,14 @@
 package ru.practicum.ewmservice.admin.user.service;
 
-import ru.practicum.ewmservice.admin.user.dto.AdminUserResponseDto;
+import ru.practicum.ewmservice.user.dto.UserRequestDto;
+import ru.practicum.ewmservice.user.dto.UserResponseDto;
 
 import java.util.List;
 
 public interface AdminUserService {
-    List<AdminUserResponseDto> getUsers();
+    List<UserResponseDto> getUsers();
 
-    AdminUserResponseDto addUser();
+    UserResponseDto addUser(UserRequestDto user);
 
     void deleteUser();
 }

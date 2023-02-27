@@ -1,7 +1,7 @@
 package ru.practicum.ewmservice.user.request.model;
 
 import lombok.*;
-import ru.practicum.ewmservice.admin.user.model.User;
+import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.user.request.enums.UserRequestStatus;
 

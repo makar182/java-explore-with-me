@@ -4,10 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.admin.compilation.dto.AdminCompilationResponseDto;
 import ru.practicum.ewmservice.admin.compilation.service.AdminCompilationService;
-import ru.practicum.ewmservice.admin.user.dto.AdminUserResponseDto;
-import ru.practicum.ewmservice.admin.user.service.AdminUserService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/compilations")

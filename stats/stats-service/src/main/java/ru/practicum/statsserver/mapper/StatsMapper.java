@@ -30,14 +30,14 @@ public class StatsMapper {
     }
 
     public static Stats toEntity(HitRequestDto hitRequestDto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(hitRequestDto.getTimestamp(), formatter);
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //LocalDateTime dateTime = LocalDateTime.parse(hitRequestDto.getTimestamp(), formatter);
 
         return Stats.builder()
                 .app(hitRequestDto.getApp())
                 .ip(hitRequestDto.getIp())
                 .uri(hitRequestDto.getUri())
-                .timestamp(dateTime)
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }
