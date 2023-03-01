@@ -1,11 +1,11 @@
 package ru.practicum.ewmservice.category.service;
 
-import ru.practicum.ewmservice.category.dto.CategoryResponseDto;
+import ru.practicum.ewmservice.category.dto.CategoryDto;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryResponseDto> getCategories();
+    List<CategoryDto> getCategories(int from, int size);
 
-    CategoryResponseDto getCategoryById();
+    CategoryDto getCategoryById(Long catId);
 }

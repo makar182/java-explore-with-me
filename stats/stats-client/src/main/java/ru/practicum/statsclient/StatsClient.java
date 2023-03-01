@@ -15,9 +15,10 @@ import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
-
+    private final String uri = "http://localhost:9090";//"http://stats-service:9090";
+    //${stats-client.uri}"
     @Autowired
-    public StatsClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value(uri) String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))

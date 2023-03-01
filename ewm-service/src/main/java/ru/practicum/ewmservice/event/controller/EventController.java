@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewmservice.admin.category.dto.AdminCategoryResponseDto;
-import ru.practicum.ewmservice.admin.event.service.AdminEventService;
 import ru.practicum.ewmservice.event.dto.EventResponseDto;
 import ru.practicum.ewmservice.event.service.EventService;
 
