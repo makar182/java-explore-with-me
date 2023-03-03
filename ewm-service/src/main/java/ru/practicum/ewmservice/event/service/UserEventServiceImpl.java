@@ -1,13 +1,18 @@
 package ru.practicum.ewmservice.event.service;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.ewmservice.event.EventState;
+import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.event.repository.LocationRepository;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
 import ru.practicum.ewmservice.event.repository.UserEventRepository;
+import ru.practicum.ewmservice.request.dto.PatchRequestDto;
+import ru.practicum.ewmservice.request.dto.RequestDto;
+import ru.practicum.ewmservice.request.mapper.RequestMapper;
+import ru.practicum.ewmservice.request.model.Request;
+import ru.practicum.ewmservice.request.repository.RequestRepository;
 import ru.practicum.ewmservice.user.model.User;
 
 import java.time.LocalDateTime;
@@ -18,10 +23,12 @@ import java.util.Optional;
 public class UserEventServiceImpl implements UserEventService {
     private final UserEventRepository userEventRepository;
     private final LocationRepository locationRepository;
+    private final RequestRepository requestRepository;
 
-    public UserEventServiceImpl(UserEventRepository userEventRepository, LocationRepository locationRepository) {
+    public UserEventServiceImpl(UserEventRepository userEventRepository, LocationRepository locationRepository, RequestRepository requestRepository) {
         this.userEventRepository = userEventRepository;
         this.locationRepository = locationRepository;
+        this.requestRepository = requestRepository;
     }
 
     @Override
@@ -70,12 +77,18 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
-    public List<UpdateRequestStatusResultDto> getEventRequests() {
-        return null;
+    public List<RequestDto> getEventRequestsByUserId(Long eventId, Long userId) {
+        return RequestMapper.toDtoList(requestRepository.findAllByEvent_IdAndRequester_Id(eventId, userId));
     }
 
     @Override
-    public List<UpdateRequestStatusResultDto> patchEventRequests() {
-        return null;
+    public List<RequestDto> patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto) {
+        List<Request> requests = requestRepository.
+                findAllByEvent_IdAndRequester_IdAndIdIn(eventId, userId, patchRequestDto.getRequestIds());
+
+        requests.forEach(request -> request.setStatus(patchRequestDto.getStatus()));
+
+        requestRepository.saveAllAndFlush(requests);
+        return RequestMapper.toDtoList(requests);
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.service.UserEventService;
+import ru.practicum.ewmservice.request.dto.PatchRequestDto;
+import ru.practicum.ewmservice.request.dto.RequestDto;
 import ru.practicum.statsclient.StatsClient;
 import ru.practicum.statsdto.HitRequestDto;
 
@@ -60,20 +62,21 @@ public class UserEventController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public List<UpdateRequestStatusResultDto> getEventRequests(@PathVariable("userId") Long userId,
-                                                               @PathVariable("eventId") Long eventId,
-                                                               HttpServletRequest request) {
+    public List<RequestDto> getEventRequests(@PathVariable("userId") Long userId,
+                                             @PathVariable("eventId") Long eventId,
+                                             HttpServletRequest request) {
         log.info("");//ДОДЕЛАТЬ!
         statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
-        return userEventService.getEventRequests();
+        return userEventService.getEventRequestsByUserId(eventId, userId);
     }
 
     @PatchMapping("/{eventId}/requests")
-    public List<UpdateRequestStatusResultDto> patchEventRequests(@PathVariable("userId") Long userId,
+    public List<RequestDto> patchEventRequests(@PathVariable("userId") Long userId,
                                                                  @PathVariable("eventId") Long eventId,
+                                                                 @RequestBody PatchRequestDto patchRequestDto,
                                                                  HttpServletRequest request) {
         log.info("");//ДОДЕЛАТЬ!
         statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
-        return userEventService.patchEventRequests();
+        return userEventService.patchEventRequests(eventId, userId, patchRequestDto);
     }
 }

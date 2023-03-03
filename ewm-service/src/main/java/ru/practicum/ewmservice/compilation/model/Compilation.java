@@ -1,7 +1,6 @@
 package ru.practicum.ewmservice.compilation.model;
 
 import lombok.*;
-import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.event.model.Event;
 
 import javax.persistence.*;
@@ -22,9 +21,6 @@ public class Compilation {
     private String title;
     @Column(name = "is_pinned")
     private Boolean pinned;
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User creator;
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "compilation_event",

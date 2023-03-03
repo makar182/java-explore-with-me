@@ -1,11 +1,16 @@
 package ru.practicum.ewmservice.event.service;
 
-import ru.practicum.ewmservice.event.dto.EventResponseDto;
+import ru.practicum.ewmservice.event.dto.EventFullDto;
+import ru.practicum.ewmservice.event.dto.EventShortDto;
+import ru.practicum.ewmservice.event.enums.EventSortType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
-    List<EventResponseDto> getEvents();
+    List<EventShortDto> getEvents(String text, List<Long> categoryIds, String paid,
+                                  LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                  String onlyAvailable, EventSortType sort, int size, int from);
 
-    EventResponseDto getEventById();
+    EventFullDto getEventById(Long eventId);
 }

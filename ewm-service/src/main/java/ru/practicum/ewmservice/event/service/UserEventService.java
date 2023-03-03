@@ -1,6 +1,8 @@
 package ru.practicum.ewmservice.event.service;
 
 import ru.practicum.ewmservice.event.dto.*;
+import ru.practicum.ewmservice.request.dto.PatchRequestDto;
+import ru.practicum.ewmservice.request.dto.RequestDto;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ public interface UserEventService {
 
     EventFullDto patchEventById(Long eventId, Long userId, PatchEventDto patchEventDto);
 
-    List<UpdateRequestStatusResultDto> getEventRequests();
+    List<RequestDto> getEventRequestsByUserId(Long eventId, Long userId);
 
-    List<UpdateRequestStatusResultDto> patchEventRequests();
+    List<RequestDto> patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto);
 }

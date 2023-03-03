@@ -2,7 +2,7 @@ package ru.practicum.ewmservice.compilation.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewmservice.compilation.dto.CompilationResponseDto;
+import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.service.CompilationService;
 
 import java.util.List;
@@ -18,14 +18,16 @@ public class CompilationController {
     }
 
     @GetMapping
-    public List<CompilationResponseDto> getCompilations() {
+    public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) String pinned,
+                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                @RequestParam(name = "from", required = false, defaultValue = "0") int from) {
         log.info("");
-        return compilationService.getCompilations();
+        return compilationService.getCompilations(pinned, size, from);
     }
 
     @GetMapping("/{compId}")
-    public CompilationResponseDto getCompilationById(@PathVariable("compId") Long compId) {
+    public CompilationDto getCompilationById(@PathVariable("compId") Long compId) {
         log.info("");
-        return compilationService.getCompilationById();
+        return compilationService.getCompilationById(compId);
     }
 }

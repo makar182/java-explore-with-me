@@ -1,6 +1,8 @@
 package ru.practicum.ewmservice.event.mapper;
 
 import ru.practicum.ewmservice.category.model.Category;
+import ru.practicum.ewmservice.event.enums.EventState;
+import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.dto.NewEventDto;
@@ -11,11 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventMapper {
-//    private final CategoryRepository categoryRepository;
-//
-//    public UserEventMapper(CategoryRepository categoryRepository) {
-//        this.categoryRepository = categoryRepository;
-//    }
 
     public static EventFullDto toEventFullDto(Event event) {
         return EventFullDto.builder()
@@ -64,6 +61,48 @@ public class EventMapper {
                 .category(Category.builder().id(newEventDto.getCategory()).build())
                 .location(newEventDto.getLocation())
                 .build();
+    }
+
+    public static Event patchEventDtoToEntityByAdmin(Event event, PatchEventDto patchEventDto) {
+        if (patchEventDto.getAnnotation() != null) {
+            event.setTitle(patchEventDto.getTitle());
+        }
+        if (patchEventDto.getTitle() != null) {
+            event.setTitle(patchEventDto.getTitle());
+        }
+        if (patchEventDto.getDescription() != null) {
+            event.setDescription(patchEventDto.getDescription());
+        }
+        if (patchEventDto.getPaid() != null) {
+            event.setPaid(patchEventDto.getPaid());
+        }
+        if (patchEventDto.getEventDate() != null) {
+            event.setEventDate(patchEventDto.getEventDate());
+        }
+        if (patchEventDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(patchEventDto.getParticipantLimit());
+        }
+        if (patchEventDto.getRequestModeration() != null) {
+            event.setRequestModeration(patchEventDto.getRequestModeration());
+        }
+        if (patchEventDto.getCategory() != null) {
+            event.setCategory(Category.builder().id(patchEventDto.getCategory()).build());
+        }
+        if (patchEventDto.getLocation() != null) {
+            event.setLocation(patchEventDto.getLocation());
+        }
+        try {
+            EventStateAction state = EventStateAction.valueOf(patchEventDto.getStateAction());
+            if (state.equals(EventStateAction.PUBLISH_EVENT)) {
+                event.setState(EventState.PUBLISHED);
+            } else if (state.equals(EventStateAction.REJECT_EVENT)) {
+                event.setState(EventState.REJECTED);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Исключение!!!");
+            throw new RuntimeException();
+        }
+        return event;
     }
 
     public static Event patchEventDtoToEntity(PatchEventDto patchEventDto) {

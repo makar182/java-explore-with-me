@@ -22,14 +22,5 @@ public class PatchEventDto {
     private Long participantLimit;
     private Boolean requestModeration;
     private String title;
-
-//    static class UserEventRequestCategory{
-//        private Long id;
-//        private String name;
-//
-//        public UserEventRequestCategory(Long id, String name) {
-//            this.id = id;
-//            this.name = name;
-//        }
-//    }
+    private String stateAction;
 }

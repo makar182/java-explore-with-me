@@ -1,11 +1,11 @@
 package ru.practicum.ewmservice.compilation.service;
 
-import ru.practicum.ewmservice.compilation.dto.CompilationResponseDto;
+import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 
 import java.util.List;
 
 public interface CompilationService {
-    List<CompilationResponseDto> getCompilations();
+    List<CompilationDto> getCompilations(String pinned, int size, int from);
 
-    CompilationResponseDto getCompilationById();
+    CompilationDto getCompilationById(Long compId);
 }

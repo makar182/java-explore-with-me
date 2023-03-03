@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.ewmservice.category.model.Category;
-import ru.practicum.ewmservice.event.EventState;
+import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.user.model.User;
 
