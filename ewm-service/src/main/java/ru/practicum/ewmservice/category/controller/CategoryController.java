@@ -16,28 +16,21 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
     private final CategoryService categoryService;
-    private final StatsClient statsClient;
-    private final String app = "ewm-service";
 
-    public CategoryController(CategoryService categoryService, StatsClient statsClient) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.statsClient = statsClient;
     }
 
     @GetMapping
     public List<CategoryDto> getCategories(@RequestParam(name = "from", required = false, defaultValue = "0") int from,
-                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                           HttpServletRequest request) {
+                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         log.info("");//ДОДЕЛАТЬ
-        statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return categoryService.getCategories(from, size);
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getCategoryById(@PathVariable("catId") Long catId,
-                                       HttpServletRequest request) {
+    public CategoryDto getCategoryById(@PathVariable("catId") Long catId) {
         log.info("");//ДОДЕЛАТЬ
-        statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return categoryService.getCategoryById(catId);
     }
 }

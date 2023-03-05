@@ -1,6 +1,7 @@
 package ru.practicum.ewmservice.compilation.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.NewCompilationDto;
@@ -17,6 +18,7 @@ public class AdminCompilationController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
         log.info("");
         return adminCompilationService.addCompilation(newCompilationDto);

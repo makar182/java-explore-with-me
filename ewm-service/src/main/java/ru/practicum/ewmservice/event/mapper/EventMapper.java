@@ -26,12 +26,12 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .category(new EventFullDto.UserEventResponseCategory(event.getCategory()))
                 .location(event.getLocation())
-                .confirmedRequests(event.getConfirmedRequests())
+                //.confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .initiator(new EventFullDto.UserEventResponseInitiator(event.getInitiator()))
                 .publishedOn(event.getPublishedOn())
                 .state(event.getState())
-                .views(event.getViews())
+                //.views(event.getViews())
                 .build();
     }
 
@@ -43,9 +43,9 @@ public class EventMapper {
                 .paid(event.getPaid())
                 .eventDate(event.getEventDate())
                 .category(new EventShortDto.UserEventResponseCategory(event.getCategory()))
-                .confirmedRequests(event.getConfirmedRequests())
+                //.confirmedRequests(event.getConfirmedRequests())
                 .initiator(new EventShortDto.UserEventResponseInitiator(event.getInitiator()))
-                .views(event.getViews())
+                //.views(event.getViews())
                 .build();
     }
 
@@ -92,14 +92,13 @@ public class EventMapper {
             event.setLocation(patchEventDto.getLocation());
         }
         try {
-            EventStateAction state = EventStateAction.valueOf(patchEventDto.getStateAction());
+            EventStateAction state = patchEventDto.getStateAction();
             if (state.equals(EventStateAction.PUBLISH_EVENT)) {
                 event.setState(EventState.PUBLISHED);
             } else if (state.equals(EventStateAction.REJECT_EVENT)) {
                 event.setState(EventState.REJECTED);
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Исключение!!!");
             throw new RuntimeException();
         }
         return event;

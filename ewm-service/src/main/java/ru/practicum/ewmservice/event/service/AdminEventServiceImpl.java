@@ -1,7 +1,9 @@
 package ru.practicum.ewmservice.event.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.dto.PatchEventDto;
+import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
 import ru.practicum.ewmservice.event.model.Event;
 
@@ -17,8 +19,10 @@ import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.event.repository.EventRepository;
 import ru.practicum.ewmservice.event.repository.LocationRepository;
+import ru.practicum.ewmservice.exception.InvalidStateActionException;
 
 @Service
+@Slf4j
 public class AdminEventServiceImpl implements AdminEventService{
     @PersistenceContext
     private EntityManager entityManager;
@@ -71,6 +75,27 @@ public class AdminEventServiceImpl implements AdminEventService{
         Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> {
             throw new RuntimeException();
         });
+
+        if(patchEventDto.getStateAction() != null) {
+            if(patchEventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
+                if(oldEvent.getState().equals(EventState.PENDING)) {
+                    oldEvent.setState(EventState.PUBLISHED);
+                } else {
+                    log.info("Установка некорректного статуса!");
+                    throw new InvalidStateActionException("Установка некорректного статуса!");
+                }
+            } else if (patchEventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
+                if(oldEvent.getState().equals(EventState.PENDING)) {
+                    oldEvent.setState(EventState.CANCELED);
+                } else {
+                    log.info("Установка некорректного статуса!");
+                    throw new InvalidStateActionException("Установка некорректного статуса!");
+                }
+            } else {
+                log.info("Установка некорректного статуса!");
+                throw new InvalidStateActionException("Установка некорректного статуса!");
+            }
+        }
 
         Location location = locationRepository.findByLatAndLon(
                 patchEventDto.getLocation().getLat(),

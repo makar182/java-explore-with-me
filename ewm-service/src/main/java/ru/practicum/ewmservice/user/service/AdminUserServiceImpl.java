@@ -1,9 +1,12 @@
 package ru.practicum.ewmservice.user.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewmservice.exception.UniqueUserEmailException;
+import ru.practicum.ewmservice.exception.UserNotExists;
 import ru.practicum.ewmservice.user.dto.NewUserDto;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 import ru.practicum.ewmservice.user.model.User;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AdminUserServiceImpl implements AdminUserService {
     private final AdminUserRepository adminUserRepository;
 
@@ -30,13 +34,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public UserDto addUser(NewUserDto user) {
-        User result = adminUserRepository.saveAndFlush(UserMapper.toEntity(user));
+    public UserDto addUser(NewUserDto newUser) {
+        User result = adminUserRepository.saveAndFlush(UserMapper.toEntity(newUser));
         return UserMapper.toDto(result);
     }
 
     @Override
     public void deleteUser(Long userId) {
+        adminUserRepository.findById(userId).orElseThrow(()->{
+            log.info(String.format("Пользователь %d не существует!", userId));
+            throw new UserNotExists(String.format("Пользователь %d не существует!", userId));
+        });
         adminUserRepository.deleteById(userId);
     }
 }

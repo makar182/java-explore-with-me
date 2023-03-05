@@ -39,7 +39,7 @@ public class RequestMapper {
                 .event(Event.builder().id(eventId).build())
                 .requester(User.builder().id(userId).build())
                 .created(LocalDateTime.now())
-                .status(RequestStatus.PENDING)
+                //.status(RequestStatus.PENDING)
                 .build();
     }
 }

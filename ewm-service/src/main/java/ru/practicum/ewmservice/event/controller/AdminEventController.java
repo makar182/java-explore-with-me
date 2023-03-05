@@ -29,15 +29,10 @@ public class AdminEventController {
                                  @RequestParam(name = "rangeStart", required = false) LocalDateTime rangeStart,
                                  @RequestParam(name = "rangeEnd", required = false) LocalDateTime rangeEnd,
                                  @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                 @RequestParam(name = "from", required = false, defaultValue = "0") int from,
-                                 HttpServletRequest request) {
+                                 @RequestParam(name = "from", required = false, defaultValue = "0") int from) {
         log.info("");
         return adminEventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
-
-//    List<Integer> users, List<EventState> states,
-//    List<Integer> categories, LocalDateTime rangeStart,
-//    LocalDateTime rangeEnd, Integer from, Integer size
 
     @PatchMapping("/{eventId}")
     public Event patchEventById(@PathVariable("eventId") Long eventId,

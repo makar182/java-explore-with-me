@@ -27,10 +27,6 @@ public class Event {
     private String description;
     @Column(name = "is_paid")
     private Boolean paid;
-    @Column(name = "views")
-    private Long views;
-    @Column(name = "confirmed_requests")
-    private Long confirmedRequests;
     @Column(name = "event_date")
     private LocalDateTime eventDate;
     @Column(name = "created_on")

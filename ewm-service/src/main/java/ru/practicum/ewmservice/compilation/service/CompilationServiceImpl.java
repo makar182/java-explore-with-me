@@ -1,10 +1,12 @@
 package ru.practicum.ewmservice.compilation.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepository;
+import ru.practicum.ewmservice.exception.CompilationNotExists;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +17,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CompilationServiceImpl implements CompilationService{
     private final CompilationRepository compilationRepository;
     @PersistenceContext
@@ -43,10 +46,11 @@ public class CompilationServiceImpl implements CompilationService{
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
-            System.out.println("Ниче не нашлось!!!");
-            throw new RuntimeException();
+        Compilation compilation = compilationRepository.findById(compId).orElseThrow(()->{
+            log.info(String.format("Подборки %d не существует!", compId));
+            throw new CompilationNotExists(String.format("Подборки %d не существует!", compId));
         });
+
         return CompilationMapper.toDto(compilation);
     }
 }

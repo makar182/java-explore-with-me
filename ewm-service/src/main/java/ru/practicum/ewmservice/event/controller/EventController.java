@@ -6,6 +6,8 @@ import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.enums.EventSortType;
 import ru.practicum.ewmservice.event.service.EventService;
+import ru.practicum.statsclient.StatsClient;
+import ru.practicum.statsdto.HitRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -16,9 +18,13 @@ import java.util.List;
 @Slf4j
 public class EventController {
     private final EventService eventService;
+    private final StatsClient statsClient;
+    private final String app = "ewm-service";
 
-    public EventController(EventService eventService) {
+
+    public EventController(EventService eventService, StatsClient statsClient) {
         this.eventService = eventService;
+        this.statsClient = statsClient;
     }
 
     @GetMapping
@@ -33,12 +39,15 @@ public class EventController {
                                          @RequestParam(name = "from", required = false, defaultValue = "0") int from,
                                          HttpServletRequest request) {
         log.info("");
+        statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventService.getEvents(text, categoryIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, size, from);
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable("id") Long eventId) {
+    public EventFullDto getEventById(@PathVariable("id") Long eventId,
+                                     HttpServletRequest request) {
         log.info("");
+        statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventService.getEventById(eventId);
     }
 }
