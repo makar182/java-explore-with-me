@@ -22,10 +22,10 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<GetStatsResponseDto> getStats(String start, String end, List<String> uris, Boolean unique) {
-        LocalDateTime parsedStart = LocalDateTime.parse(start.replace("T"," "), dateTimeFormatter);
-        LocalDateTime parsedEnd = LocalDateTime.parse(end.replace("T"," "), dateTimeFormatter);
+        LocalDateTime parsedStart = LocalDateTime.parse(start.replace("T", " "), dateTimeFormatter);
+        LocalDateTime parsedEnd = LocalDateTime.parse(end.replace("T", " "), dateTimeFormatter);
         List<StatsSummary> result = statsRepository.getStats(parsedStart, parsedEnd, uris, unique);
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return List.of();
         } else {
             return StatsMapper.toGetStatsResponseDtoList(result);
