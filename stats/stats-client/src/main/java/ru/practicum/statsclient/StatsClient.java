@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class StatsClient extends BaseClient {
-    private final String uri = /*"http://localhost:9090";//"http://stats-service:9090";//*/"${stats-client.uri}";
+    //private final String uri = /*"http://localhost:9090";//"http://stats-service:9090";//*/"${stats-client.uri}";
 
     @Autowired
-    public StatsClient(@Value(uri) String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("${stats-server.uri}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
