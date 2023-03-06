@@ -232,8 +232,7 @@ public class UserEventServiceImpl implements UserEventService {
             throw new RequestException(String.format("Данное событие не принадлежит пользователю %d!", userId));
         }
 
-        List<Request> requests = requestRepository.
-                findAllByEvent_IdAndEvent_Initiator_IdAndIdIn(eventId, userId, patchRequestDto.getRequestIds());
+        List<Request> requests = requestRepository.findAllByEvent_IdAndEvent_Initiator_IdAndIdIn(eventId, userId, patchRequestDto.getRequestIds());
 
         if (!requests.stream()
                 .map(Request::getStatus)

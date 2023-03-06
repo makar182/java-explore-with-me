@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class CompilationMapper {
-    static public Compilation toEntity(NewCompilationDto newCompilationDto, List<Event> events) {
+    public static Compilation toEntity(NewCompilationDto newCompilationDto, List<Event> events) {
         return Compilation.builder()
                 .events(new HashSet<>(events))
                 .title(newCompilationDto.getTitle())
@@ -18,7 +18,7 @@ public class CompilationMapper {
                 .build();
     }
 
-    static public CompilationDto toDto(Compilation compilation) {
+    public static CompilationDto toDto(Compilation compilation) {
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .events(new ArrayList<>(compilation.getEvents()))
