@@ -64,7 +64,7 @@ public class UserEventServiceImpl implements UserEventService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
 
-        Map<Long, Long> stats = statsClient.getStats(uris, false);
+        Map<Long, Long> stats = statsClient.getStats(uris, false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(uris);
 
         for (EventShortDto event : eventsDto) {
@@ -119,7 +119,7 @@ public class UserEventServiceImpl implements UserEventService {
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
-        Map<Long, Long> stats = statsClient.getStats(List.of(eventId), false);
+        Map<Long, Long> stats = statsClient.getStats(List.of(eventId), false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(List.of(eventId));
 
         EventFullDto eventDto = EventMapper.toEventFullDto(event);
@@ -204,7 +204,7 @@ public class UserEventServiceImpl implements UserEventService {
 
         Event result = userEventRepository.saveAndFlush(oldEvent);
 
-        Map<Long, Long> stats = statsClient.getStats(List.of(eventId), false);
+        Map<Long, Long> stats = statsClient.getStats(List.of(eventId), false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(List.of(eventId));
 
         EventFullDto eventDto = EventMapper.toEventFullDto(result);

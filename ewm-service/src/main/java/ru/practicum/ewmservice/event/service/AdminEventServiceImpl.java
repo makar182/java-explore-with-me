@@ -85,7 +85,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         List<Event> events = entityManager.createQuery(query).setFirstResult(from).setMaxResults(size).getResultList();
         List<Long> eventsId = events.stream().map(Event::getId).collect(Collectors.toList());
 
-        Map<Long, Long> stats = statsClient.getStats(eventsId, false);
+        Map<Long, Long> stats = statsClient.getStats(eventsId, false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(eventsId);
 
         List<EventFullDto> result = EventMapper.toEventFullDtoList(events);

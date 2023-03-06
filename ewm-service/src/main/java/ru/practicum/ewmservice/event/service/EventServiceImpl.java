@@ -96,7 +96,7 @@ public class EventServiceImpl implements EventService {
             result.stream().filter(x -> x.getParticipantLimit() > filteredEvents.getOrDefault(x.getId(), 0L));
         }
 
-        Map<Long, Long> stats = statsClient.getStats(eventIds, false);
+        Map<Long, Long> stats = statsClient.getStats(eventIds, false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(eventIds);
 
         List<EventShortDto> resultDto = EventMapper.toEventShortDtoList(entityManager.createQuery(query)
@@ -130,7 +130,7 @@ public class EventServiceImpl implements EventService {
 
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
 
-        Map<Long, Long> stats = statsClient.getStats(List.of(eventFullDto.getId()), false);
+        Map<Long, Long> stats = statsClient.getStats(List.of(eventFullDto.getId()), false, null, null);
         Map<Long, Long> confirmedRequests = requestRepository.getConfirmedRequestsBatch(List.of(eventFullDto.getId()));
 
         eventFullDto.setViews(stats.getOrDefault(eventFullDto.getId(), 0L));
