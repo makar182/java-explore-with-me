@@ -8,6 +8,7 @@ import ru.practicum.ewmservice.event.dto.EventShortDto;
 import ru.practicum.ewmservice.event.dto.NewEventDto;
 import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.dto.PatchEventDto;
+import ru.practicum.ewmservice.exception.InvalidEventStateActionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,7 @@ public class EventMapper {
                 .paid(event.getPaid())
                 .eventDate(event.getEventDate())
                 .category(new EventShortDto.UserEventResponseCategory(event.getCategory()))
-                //.confirmedRequests(event.getConfirmedRequests())
                 .initiator(new EventShortDto.UserEventResponseInitiator(event.getInitiator()))
-                //.views(event.getViews())
                 .build();
     }
 
@@ -65,7 +64,7 @@ public class EventMapper {
 
     public static Event patchEventDtoToEntityByAdmin(Event event, PatchEventDto patchEventDto) {
         if (patchEventDto.getAnnotation() != null) {
-            event.setTitle(patchEventDto.getTitle());
+            event.setAnnotation(patchEventDto.getAnnotation());
         }
         if (patchEventDto.getTitle() != null) {
             event.setTitle(patchEventDto.getTitle());
@@ -97,25 +96,13 @@ public class EventMapper {
                 event.setState(EventState.PUBLISHED);
             } else if (state.equals(EventStateAction.REJECT_EVENT)) {
                 event.setState(EventState.REJECTED);
+            } else {
+                throw new InvalidEventStateActionException("Указан некорректный статус!");
             }
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException();
+            throw new InvalidEventStateActionException("Указан некорректный статус!");
         }
         return event;
-    }
-
-    public static Event patchEventDtoToEntity(PatchEventDto patchEventDto) {
-        return Event.builder()
-                .title(patchEventDto.getTitle())
-                .annotation(patchEventDto.getAnnotation())
-                .description(patchEventDto.getDescription())
-                .paid(patchEventDto.getPaid())
-                .eventDate(patchEventDto.getEventDate())
-                .participantLimit(patchEventDto.getParticipantLimit())
-                .requestModeration(patchEventDto.getRequestModeration())
-                .category(Category.builder().id(patchEventDto.getCategory()).build())
-                .location(patchEventDto.getLocation())
-                .build();
     }
 
     public static List<EventFullDto> toEventFullDtoList(List<Event> events) {

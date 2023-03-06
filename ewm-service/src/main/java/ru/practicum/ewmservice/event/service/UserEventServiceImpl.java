@@ -3,10 +3,8 @@ package ru.practicum.ewmservice.event.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.category.model.Category;
-import ru.practicum.ewmservice.event.dto.EventFullDto;
-import ru.practicum.ewmservice.event.dto.EventShortDto;
-import ru.practicum.ewmservice.event.dto.NewEventDto;
-import ru.practicum.ewmservice.event.dto.PatchEventDto;
+import ru.practicum.ewmservice.category.repository.CategoryRepository;
+import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
@@ -15,10 +13,7 @@ import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.event.repository.EventRepository;
 import ru.practicum.ewmservice.event.repository.LocationRepository;
 import ru.practicum.ewmservice.event.repository.UserEventRepository;
-import ru.practicum.ewmservice.exception.EventNotExists;
-import ru.practicum.ewmservice.exception.InvalidEventDateException;
-import ru.practicum.ewmservice.exception.InvalidStateActionException;
-import ru.practicum.ewmservice.exception.RequestException;
+import ru.practicum.ewmservice.exception.*;
 import ru.practicum.ewmservice.request.dto.PatchRequestDto;
 import ru.practicum.ewmservice.request.dto.RequestDto;
 import ru.practicum.ewmservice.request.enums.RequestStatus;
@@ -26,6 +21,7 @@ import ru.practicum.ewmservice.request.mapper.RequestMapper;
 import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.request.repository.RequestRepository;
 import ru.practicum.ewmservice.user.model.User;
+import ru.practicum.ewmservice.user.repository.UserRepository;
 import ru.practicum.statsclient.StatsClient;
 
 import java.time.LocalDateTime;
@@ -40,13 +36,17 @@ public class UserEventServiceImpl implements UserEventService {
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final StatsClient statsClient;
 
-    public UserEventServiceImpl(UserEventRepository userEventRepository, LocationRepository locationRepository, RequestRepository requestRepository, EventRepository eventRepository, StatsClient statsClient) {
+    public UserEventServiceImpl(UserEventRepository userEventRepository, LocationRepository locationRepository, RequestRepository requestRepository, EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, StatsClient statsClient) {
         this.userEventRepository = userEventRepository;
         this.locationRepository = locationRepository;
         this.requestRepository = requestRepository;
         this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
         this.statsClient = statsClient;
     }
 
@@ -86,12 +86,24 @@ public class UserEventServiceImpl implements UserEventService {
                 newEventDto.getLocation().getLat(),
                 newEventDto.getLocation().getLon()).orElseGet(() -> locationRepository.saveAndFlush(newEventDto.getLocation()));
 
+        Category category = categoryRepository.findById(newEventDto.getCategory()).orElseThrow(() -> {
+            log.info(String.format("Категории %d не существует!", newEventDto.getCategory()));
+            throw new CategoryNotExistsException(String.format("Категории %d не существует!", newEventDto.getCategory()));
+        });
+
+        User initiator = userRepository.findById(userId).orElseThrow(() -> {
+            log.info(String.format("Пользователя %d не существует!", userId));
+            throw new UserNotExistsException(String.format("Пользователя %d не существует!", userId));
+        });
+
         Event event = EventMapper.newEventDtoToEntity(newEventDto);
         event.setState(EventState.PENDING);
         event.setInitiator(User.builder().id(userId).build());
         event.setLocation(location);
         event.setCreatedOn(LocalDateTime.now());
         event.setPublishedOn(LocalDateTime.now());
+        event.setCategory(category);
+        event.setInitiator(initiator);
         event = userEventRepository.saveAndFlush(event);
 
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
@@ -104,7 +116,7 @@ public class UserEventServiceImpl implements UserEventService {
     public EventFullDto getEventById(Long eventId, Long userId) {
         Event event = userEventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
             log.info(String.format("События %d не существует!", eventId));
-            throw new EventNotExists(String.format("События %d не существует!", eventId));
+            throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         Map<Long, Long> stats = statsClient.getStats(List.of(eventId), false);
@@ -122,8 +134,19 @@ public class UserEventServiceImpl implements UserEventService {
     public EventFullDto patchEventById(Long eventId, Long userId, PatchEventDto patchEventDto) {
         Event oldEvent = userEventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
             log.info(String.format("События %d не существует!", eventId));
-            throw new EventNotExists(String.format("События %d не существует!", eventId));
+            throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
+
+        if (patchEventDto.getEventDate() != null && patchEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            log.info(String.format("Некорректная дата для события %s не существует!", patchEventDto.getTitle()));
+            throw new InvalidEventDateException(String.format("Некорректная дата для события %s не существует!",
+                    patchEventDto.getTitle()));
+        }
+
+        if (!oldEvent.getState().equals(EventState.PENDING) && !oldEvent.getState().equals(EventState.REJECTED)) {
+            log.info("Изменять можно только неопубликованные или отмененные события!");
+            throw new InvalidEventDateException("Изменять можно только неопубликованные или отмененные события!");
+        }
 
         if (patchEventDto.getAnnotation() != null) {
             oldEvent.setAnnotation(patchEventDto.getAnnotation());
@@ -135,11 +158,6 @@ public class UserEventServiceImpl implements UserEventService {
             oldEvent.setDescription(patchEventDto.getDescription());
         }
         if (patchEventDto.getEventDate() != null) {
-            if (patchEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-                log.info(String.format("Некорректная дата для события %s не существует!", patchEventDto.getTitle()));
-                throw new InvalidEventDateException(String.format("Некорректная дата для события %s не существует!",
-                        patchEventDto.getTitle()));
-            }
             oldEvent.setEventDate(patchEventDto.getEventDate());
         }
         if (patchEventDto.getAnnotation() != null) {
@@ -162,7 +180,7 @@ public class UserEventServiceImpl implements UserEventService {
         }
         if (patchEventDto.getStateAction() != null) {
             if (patchEventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
-                if (oldEvent.getState().equals(EventState.CANCELED)) {
+                if (oldEvent.getState().equals(EventState.REJECTED)) {
                     oldEvent.setState(EventState.PENDING);
                 } else {
                     log.info("Установка некорректного статуса!");
@@ -199,14 +217,14 @@ public class UserEventServiceImpl implements UserEventService {
 
     @Override
     public List<RequestDto> getEventRequestsByUserId(Long eventId, Long userId) {
-        return RequestMapper.toDtoList(requestRepository.findAllByEvent_IdAndRequester_Id(eventId, userId));
+        return RequestMapper.toDtoList(requestRepository.findAllByEvent_IdAndEvent_Initiator_Id(eventId, userId));
     }
 
     @Override
-    public List<RequestDto> patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto) {
+    public UpdateRequestStatusResultDto patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
             log.info(String.format("События %d не существует!", eventId));
-            throw new EventNotExists(String.format("События %d не существует!", eventId));
+            throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         if (!event.getInitiator().getId().equals(userId)) {
@@ -215,13 +233,13 @@ public class UserEventServiceImpl implements UserEventService {
         }
 
         List<Request> requests = requestRepository.
-                findAllByEvent_IdAndRequester_IdAndIdIn(eventId, userId, patchRequestDto.getRequestIds());
+                findAllByEvent_IdAndEvent_Initiator_IdAndIdIn(eventId, userId, patchRequestDto.getRequestIds());
 
         if (!requests.stream()
                 .map(Request::getStatus)
                 .allMatch(RequestStatus.PENDING::equals)) {
-            log.info("Нельзя изменять статус если статус заявки не равен PUBLISHED!");
-            throw new RequestException("Нельзя изменять статус если статус заявки не равен PUBLISHED!");
+            log.info("Нельзя изменять статус если статус заявки не равен PENDING!");
+            throw new RequestException("Нельзя изменять статус если статус заявки не равен PENDING!");
         }
 
         if (patchRequestDto.getStatus().equals(RequestStatus.REJECTED)) {
@@ -245,6 +263,17 @@ public class UserEventServiceImpl implements UserEventService {
                 }
             }
         }
-        return RequestMapper.toDtoList(requests);
+
+        List<RequestDto> confirmedRequests = requests.stream()
+                .filter(x -> x.getStatus().equals(RequestStatus.CONFIRMED))
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+
+        List<RequestDto> rejectedRequests = requests.stream()
+                .filter(x -> x.getStatus().equals(RequestStatus.REJECTED))
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+
+        return new UpdateRequestStatusResultDto(confirmedRequests, rejectedRequests);
     }
 }

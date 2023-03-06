@@ -4,11 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.category.service.CategoryService;
-import ru.practicum.statsclient.StatsClient;
-import ru.practicum.statsdto.HitRequestDto;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

@@ -1,12 +1,7 @@
 package ru.practicum.ewmservice.request.mapper;
 
-import ru.practicum.ewmservice.category.dto.CategoryDto;
-import ru.practicum.ewmservice.category.dto.NewCategoryDto;
-import ru.practicum.ewmservice.category.mapper.CategoryMapper;
-import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.request.dto.RequestDto;
-import ru.practicum.ewmservice.request.enums.RequestStatus;
 import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.user.model.User;
 

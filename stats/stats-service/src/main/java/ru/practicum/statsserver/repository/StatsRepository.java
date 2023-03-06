@@ -9,5 +9,5 @@ import java.util.List;
 public interface StatsRepository {
     void hit(Stats stats);
 
-    List<StatsSummary> getStats(LocalDateTime start, LocalDateTime end, List<Long> uris, Boolean unique);
+    List<StatsSummary> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 }

@@ -6,7 +6,7 @@ import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepository;
 import ru.practicum.ewmservice.exception.RequestException;
-import ru.practicum.ewmservice.exception.EventNotExists;
+import ru.practicum.ewmservice.exception.EventNotExistsException;
 import ru.practicum.ewmservice.request.dto.RequestDto;
 import ru.practicum.ewmservice.request.enums.RequestStatus;
 import ru.practicum.ewmservice.request.mapper.RequestMapper;
@@ -35,7 +35,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto addRequest(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
             log.info(String.format("События %d не существует!", eventId));
-            throw new EventNotExists(String.format("События %d не существует!", eventId));
+            throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         if (event.getInitiator().getId().equals(userId)) {
@@ -52,7 +52,6 @@ public class RequestServiceImpl implements RequestService {
             log.info("Создавать повторный запрос запрещено!");
             throw new RequestException("Создавать повторный запрос запрещено!");
         }
-        ;
 
         if (requestRepository.findAllByEvent_IdAndStatus(eventId, RequestStatus.CONFIRMED)
                 .size() >= event.getParticipantLimit()) {
@@ -62,13 +61,14 @@ public class RequestServiceImpl implements RequestService {
 
         Request request = RequestMapper.toEntity(userId, eventId);
 
-        if(!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(RequestStatus.CONFIRMED);
         } else {
             request.setStatus(RequestStatus.PENDING);
         }
 
-        return RequestMapper.toDto(requestRepository.saveAndFlush(request));
+        Request result = requestRepository.saveAndFlush(request);
+        return RequestMapper.toDto(result);
     }
 
     @Override

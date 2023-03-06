@@ -26,7 +26,7 @@ public class EventShortDto {
 
     @Getter
     @Setter
-    public static class UserEventResponseCategory{
+    public static class UserEventResponseCategory {
         private Long id;
         private String name;
 
@@ -38,7 +38,7 @@ public class EventShortDto {
 
     @Getter
     @Setter
-    public static class UserEventResponseInitiator{
+    public static class UserEventResponseInitiator {
         private Long id;
         private String name;
 

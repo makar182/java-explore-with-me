@@ -7,7 +7,6 @@ import ru.practicum.ewmservice.category.dto.CategoryDto;
 import ru.practicum.ewmservice.category.dto.NewCategoryDto;
 import ru.practicum.ewmservice.category.service.AdminCategoryService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController

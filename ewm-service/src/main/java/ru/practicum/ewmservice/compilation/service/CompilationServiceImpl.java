@@ -6,7 +6,7 @@ import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
 import ru.practicum.ewmservice.compilation.repository.CompilationRepository;
-import ru.practicum.ewmservice.exception.CompilationNotExists;
+import ru.practicum.ewmservice.exception.CompilationNotExistsException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CompilationServiceImpl implements CompilationService{
+public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     @PersistenceContext
     private EntityManager entityManager;
@@ -46,9 +46,9 @@ public class CompilationServiceImpl implements CompilationService{
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow(()->{
+        Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
             log.info(String.format("Подборки %d не существует!", compId));
-            throw new CompilationNotExists(String.format("Подборки %d не существует!", compId));
+            throw new CompilationNotExistsException(String.format("Подборки %d не существует!", compId));
         });
 
         return CompilationMapper.toDto(compilation);

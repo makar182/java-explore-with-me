@@ -7,12 +7,11 @@ import ru.practicum.ewmservice.category.dto.NewCategoryDto;
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.category.repository.CategoryRepository;
-import ru.practicum.ewmservice.exception.CategoryNotExists;
-import ru.practicum.ewmservice.exception.UserNotExists;
+import ru.practicum.ewmservice.exception.CategoryNotExistsException;
 
 @Service
 @Slf4j
-public class AdminCategoryServiceImpl implements AdminCategoryService{
+public class AdminCategoryServiceImpl implements AdminCategoryService {
     private final CategoryRepository categoryRepository;
 
     public AdminCategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -32,9 +31,9 @@ public class AdminCategoryServiceImpl implements AdminCategoryService{
 
     @Override
     public CategoryDto patchCategory(Long catId, NewCategoryDto newCategoryDto) {
-        categoryRepository.findById(catId).orElseThrow(()->{
+        categoryRepository.findById(catId).orElseThrow(() -> {
             log.info(String.format("Категории %d не существует!", catId));
-            throw new CategoryNotExists(String.format("Категории %d не существует!", catId));
+            throw new CategoryNotExistsException(String.format("Категории %d не существует!", catId));
         });
         Category category = CategoryMapper.toEntity(newCategoryDto);
         category.setId(catId);

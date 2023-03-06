@@ -13,7 +13,6 @@ import ru.practicum.statsdto.GetStatsResponseDto;
 import ru.practicum.statsdto.HitRequestDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StatsClient extends BaseClient {
-    private final String uri = "http://localhost:9090";//"http://stats-service:9090";//${stats-client.uri}"
+    private final String uri = /*"http://localhost:9090";//"http://stats-service:9090";//*/"${stats-client.uri}";
 
     @Autowired
     public StatsClient(@Value(uri) String serverUrl, RestTemplateBuilder builder) {
@@ -37,10 +36,15 @@ public class StatsClient extends BaseClient {
         LocalDateTime start = LocalDateTime.now().minusYears(100);
         LocalDateTime end = LocalDateTime.now().plusYears(100);
 
+        StringBuilder sbUris = new StringBuilder();
+        for (Long aLong : uris) {
+            sbUris.append("/events/").append(aLong);
+        }
+
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,
-                "uris", uris,
+                "uris", sbUris.toString(),
                 "unique", unique
         );
         ResponseEntity<Object> objects = get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
@@ -51,9 +55,7 @@ public class StatsClient extends BaseClient {
             return new HashMap<>();
         } else {
             return stats.stream()
-                    .collect(Collectors.toMap(
-                            x -> Long.parseLong(x.getUri().split("/", 0)[2]),
-                            GetStatsResponseDto::getHits));
+                    .collect(Collectors.toMap(x -> Long.parseLong(x.getUri().split("/", 0)[2]), GetStatsResponseDto::getHits));
         }
     }
 

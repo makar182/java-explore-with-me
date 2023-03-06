@@ -7,6 +7,8 @@ import ru.practicum.ewmservice.compilation.dto.CompilationDto;
 import ru.practicum.ewmservice.compilation.dto.NewCompilationDto;
 import ru.practicum.ewmservice.compilation.service.AdminCompilationService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/admin/compilations")
 @Slf4j
@@ -19,13 +21,14 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
         log.info("");
         return adminCompilationService.addCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
-    public  void deleteCompilation(@PathVariable("compId") Long compId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCompilation(@PathVariable("compId") Long compId) {
         log.info("");
         adminCompilationService.deleteCompilation(compId);
     }

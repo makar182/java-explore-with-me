@@ -18,7 +18,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<GetStatsResponseDto> getStats(LocalDateTime start, LocalDateTime end, List<Long> uris, Boolean unique) {
+    public List<GetStatsResponseDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         return StatsMapper.toGetStatsResponseDtoList(statsRepository.getStats(start, end, uris, unique));
     }
 

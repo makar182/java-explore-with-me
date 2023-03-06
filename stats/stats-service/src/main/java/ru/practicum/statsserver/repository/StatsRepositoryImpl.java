@@ -21,15 +21,15 @@ public class StatsRepositoryImpl implements StatsRepository {
     }
 
     @Override
-    public List<StatsSummary> getStats(LocalDateTime start, LocalDateTime end, List<Long> uris, Boolean unique) {
+    public List<StatsSummary> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         String sql;
         List<StatsSummary> result;
         List<Object> params = new ArrayList<>();
 
-        if (uris == null) {
+        if (uris.size() == 0) {
             if (unique) {
                 sql = "SELECT app, uri, count(distinct ip) as cnt FROM stats " +
-                        "WHERE timestamp BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
+                        "WHERE timestamp BETWEEN ? AND ? AND uri <> '/events' GROUP BY app, uri ORDER BY cnt DESC";
             } else {
                 sql = "SELECT app, uri, count(1) as cnt FROM stats WHERE timestamp " +
                         "BETWEEN ? AND ? GROUP BY app, uri ORDER BY cnt DESC";
@@ -37,10 +37,6 @@ public class StatsRepositoryImpl implements StatsRepository {
             result = jdbcTemplate.query(sql, this::makeStatsSummary, Timestamp.valueOf(start), Timestamp.valueOf(end));
         } else {
             String inSql = String.join(",", Collections.nCopies(uris.size(), "?"));
-            List<String> fullUris = new ArrayList<>();
-            for(Long uri : uris) {
-                fullUris.add("/events/"+uri);
-            }
             if (unique) {
                 sql = String.format("SELECT app, uri, count(distinct ip) cnt FROM stats " +
                         "WHERE timestamp BETWEEN ? AND ? AND uri IN (%s) GROUP BY app, uri ORDER BY cnt DESC", inSql);
@@ -50,7 +46,7 @@ public class StatsRepositoryImpl implements StatsRepository {
             }
             params.add(start);
             params.add(end);
-            params.addAll(fullUris);
+            params.addAll(uris);
             result = jdbcTemplate.query(sql, this::makeStatsSummary, params.toArray());
         }
 

@@ -17,28 +17,28 @@ import java.time.LocalDateTime;
 public class ApiErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleUserNotExists(final UserNotExists e) {
+    public ApiError handleUserNotExists(final UserNotExistsException e) {
         log.error("Ошибка: " + e.getMessage());
         return new ApiError(ApiErrorStatus.NOT_FOUND, "Пользователь не существует", e.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleCategoryNotExists(final CategoryNotExists e) {
+    public ApiError handleCategoryNotExists(final CategoryNotExistsException e) {
         log.error("Ошибка: " + e.getMessage());
         return new ApiError(ApiErrorStatus.NOT_FOUND, "Категория не существует", e.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleEventNotExists(final EventNotExists e) {
+    public ApiError handleEventNotExists(final EventNotExistsException e) {
         log.error("Ошибка: " + e.getMessage());
         return new ApiError(ApiErrorStatus.NOT_FOUND, "Событие не существует", e.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleCompilationNotExists(final CompilationNotExists e) {
+    public ApiError handleCompilationNotExists(final CompilationNotExistsException e) {
         log.error("Ошибка: " + e.getMessage());
         return new ApiError(ApiErrorStatus.NOT_FOUND, "Подборка не существует", e.getMessage(), LocalDateTime.now());
     }
@@ -72,6 +72,13 @@ public class ApiErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleInvalidEventStateActionException(final InvalidEventStateActionException e) {
+        log.error("Ошибка: " + e.getMessage());
+        return new ApiError(ApiErrorStatus.BAD_REQUEST, "Некорректный статус", e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleInvalidStateActionException(final InvalidStateActionException e) {
         log.error("Ошибка: " + e.getMessage());
@@ -89,6 +96,6 @@ public class ApiErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleThrowable(final Throwable e) {
         log.error("Ошибка: " + e.getMessage());
-        return new ApiError(ApiErrorStatus.BAD_REQUEST,  e.getCause().getMessage(), e.getMessage(), LocalDateTime.now());
+        return new ApiError(ApiErrorStatus.BAD_REQUEST, e.getCause().getMessage(), e.getMessage(), LocalDateTime.now());
     }
 }

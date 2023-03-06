@@ -17,5 +17,5 @@ public interface UserEventService {
 
     List<RequestDto> getEventRequestsByUserId(Long eventId, Long userId);
 
-    List<RequestDto> patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto);
+    UpdateRequestStatusResultDto patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto);
 }

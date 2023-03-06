@@ -4,9 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.request.enums.RequestStatus;
-import ru.practicum.ewmservice.user.model.User;
 
 import java.time.LocalDateTime;
 

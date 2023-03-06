@@ -3,17 +3,12 @@ package ru.practicum.ewmservice.event.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewmservice.event.dto.EventFullDto;
-import ru.practicum.ewmservice.event.dto.EventShortDto;
-import ru.practicum.ewmservice.event.dto.NewEventDto;
-import ru.practicum.ewmservice.event.dto.PatchEventDto;
+import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.service.UserEventService;
 import ru.practicum.ewmservice.request.dto.PatchRequestDto;
 import ru.practicum.ewmservice.request.dto.RequestDto;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -61,9 +56,9 @@ public class UserEventController {
     }
 
     @PatchMapping("/{eventId}/requests")
-    public List<RequestDto> patchEventRequests(@PathVariable("userId") Long userId,
-                                                                 @PathVariable("eventId") Long eventId,
-                                                                 @RequestBody PatchRequestDto patchRequestDto) {
+    public UpdateRequestStatusResultDto patchEventRequests(@PathVariable("userId") Long userId,
+                                                           @PathVariable("eventId") Long eventId,
+                                                           @RequestBody PatchRequestDto patchRequestDto) {
         log.info("");//ДОДЕЛАТЬ!
         return userEventService.patchEventRequests(eventId, userId, patchRequestDto);
     }

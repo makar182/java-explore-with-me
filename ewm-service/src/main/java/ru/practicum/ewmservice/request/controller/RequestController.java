@@ -6,11 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.request.dto.RequestDto;
 import ru.practicum.ewmservice.request.service.RequestService;
-import ru.practicum.statsclient.StatsClient;
-import ru.practicum.statsdto.HitRequestDto;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,7 +15,6 @@ import java.util.List;
 @Slf4j
 public class RequestController {
     private final RequestService requestService;
-    private final String app = "ewm-service";
 
     @GetMapping
     public List<RequestDto> getRequestsByUserId(@PathVariable("userId") Long userId) {
