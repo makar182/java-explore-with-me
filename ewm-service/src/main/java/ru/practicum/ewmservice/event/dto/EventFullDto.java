@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class EventFullDto {
     private UserEventResponseCategory category;
     private UserEventResponseInitiator initiator;
     private String description;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
