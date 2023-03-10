@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.ewmservice.category.model.Category;
+import ru.practicum.ewmservice.event.dto.LocationDto;
 import ru.practicum.ewmservice.event.enums.EventState;
+import ru.practicum.ewmservice.event.mapper.LocationMapper;
 import ru.practicum.ewmservice.event.model.Event;
-import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.user.model.User;
 
 import java.time.LocalDateTime;
@@ -21,13 +22,13 @@ public class CompilationDto {
     Long id;
     String title;
     Boolean pinned;
-    List<CompilationEvent> events;
+    List<CompilationEventDto> events;
 
     @Getter
     @Setter
     @Builder
     @AllArgsConstructor
-    public static class CompilationEvent {
+    public static class CompilationEventDto {
         private final Long id;
         private final String title;
         private final String annotation;
@@ -41,9 +42,9 @@ public class CompilationDto {
         private final EventState state;
         private final User initiator;
         private final Category category;
-        private final Location location;
+        private final LocationDto location;
 
-        public CompilationEvent(Event event) {
+        public CompilationEventDto(Event event) {
             this.id = event.getId();
             this.title = event.getTitle();
             this.annotation = event.getAnnotation();
@@ -57,7 +58,7 @@ public class CompilationDto {
             this.state = event.getState();
             this.initiator = event.getInitiator();
             this.category = event.getCategory();
-            this.location = event.getLocation();
+            this.location = LocationMapper.toDto(event.getLocation());
         }
     }
 }

@@ -19,10 +19,10 @@ public class CompilationMapper {
     }
 
     public static CompilationDto toDto(Compilation compilation) {
-        List<CompilationDto.CompilationEvent> parsedEvents = new ArrayList<>();
+        List<CompilationDto.CompilationEventDto> parsedEvents = new ArrayList<>();
 
         for (Event event : compilation.getEvents()) {
-            parsedEvents.add(new CompilationDto.CompilationEvent(event));
+            parsedEvents.add(new CompilationDto.CompilationEventDto(event));
         }
 
         return CompilationDto.builder()
