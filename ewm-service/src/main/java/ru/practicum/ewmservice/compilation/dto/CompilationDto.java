@@ -27,7 +27,7 @@ public class CompilationDto {
     @Setter
     @Builder
     @AllArgsConstructor
-    public static class CompilationEvent{
+    public static class CompilationEvent {
         private final Long id;
         private final String title;
         private final String annotation;

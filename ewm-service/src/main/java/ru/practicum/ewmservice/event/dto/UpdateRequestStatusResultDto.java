@@ -18,7 +18,7 @@ public class UpdateRequestStatusResultDto {
 
     @Getter
     @Setter
-    public static class InnerRequestDto{
+    public static class InnerRequestDto {
         private final Long id;
         private final Long event;
         private final Long requester;
