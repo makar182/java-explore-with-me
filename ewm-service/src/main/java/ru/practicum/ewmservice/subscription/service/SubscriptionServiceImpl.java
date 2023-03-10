@@ -1,10 +1,13 @@
 package ru.practicum.ewmservice.subscription.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.EventRepository;
+import ru.practicum.ewmservice.exception.SubscriptionAlreadyExistsException;
+import ru.practicum.ewmservice.exception.SubscriptionNotExistsException;
 import ru.practicum.ewmservice.subscription.dto.SubscriptionEventDto;
 import ru.practicum.ewmservice.subscription.mapper.SubscriptionMapper;
 import ru.practicum.ewmservice.subscription.model.Subscription;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
@@ -29,6 +33,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void addSubscription(Long followerId, List<Long> followedIds) {
+
+        List<Subscription> savedSubscriptions = subscriptionRepository.findAllByFollower_IdAndFollowedIdIn(followerId, followedIds);
+        if(!savedSubscriptions.isEmpty()) {
+            log.info("Попытка создания дубликата подписки с данными followerId = {} и followedIds = {}", followerId, followedIds);
+            throw new SubscriptionAlreadyExistsException("Попытка создания дубликата подписки");
+        }
         List<Subscription> subscriptions = new ArrayList<>();
         for (Long followedId : followedIds) {
             subscriptions.add(new Subscription(null, User.builder().id(followerId).build(),
@@ -43,6 +53,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (saved.size() == followedIds.size()) {
             List<Long> savedIds = saved.stream().map(Subscription::getId).collect(Collectors.toList());
             subscriptionRepository.deleteAllById(savedIds);
+        } else {
+            log.info("Попытка удалить несуществующие подписки с данными followerId = {} и followedIds = {}", followerId, followedIds);
+            throw new SubscriptionNotExistsException("Попытка удалить несуществующие подписки");
         }
     }
 
