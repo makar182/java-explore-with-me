@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.ewmservice.event.enums.EventStateAction;
-import ru.practicum.ewmservice.event.model.Location;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +17,7 @@ public class PatchEventDto {
     private Long category;
     private String description;
     private LocalDateTime eventDate;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     private Long participantLimit;
     private Boolean requestModeration;

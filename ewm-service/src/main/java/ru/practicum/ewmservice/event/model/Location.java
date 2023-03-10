@@ -1,13 +1,15 @@
 package ru.practicum.ewmservice.event.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "locations")
 public class Location {
     @Id

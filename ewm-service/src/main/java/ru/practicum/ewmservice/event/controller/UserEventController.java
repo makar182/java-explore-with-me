@@ -21,7 +21,7 @@ public class UserEventController {
 
     @GetMapping
     public List<EventShortDto> getEventsByUserId(@PathVariable("userId") Long userId) {
-        log.info(String.format("Выполнен запрос GET /users/{userId}/events с данными userId = %d", userId));
+        log.info("Выполнен запрос GET /users/{userId}/events с данными userId = {}", userId);
         return userEventService.getEventsByUserId(userId);
     }
 
@@ -29,14 +29,14 @@ public class UserEventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable("userId") Long userId,
                                  @RequestBody @Valid NewEventDto newEventDto) {
-        log.info(String.format("Выполнен запрос POST /users/{userId}/events с данными userId = %d и %s", userId, newEventDto));
+        log.info("Выполнен запрос POST /users/{}/events и телом {}", userId, newEventDto);
         return userEventService.addEvent(userId, newEventDto);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable("userId") Long userId,
                                      @PathVariable("eventId") Long eventId) {
-        log.info("");//ДОДЕЛАТЬ!
+        log.info("Выполнен запрос GET /users/{}/events/{}", userId, eventId);
         return userEventService.getEventById(eventId, userId);
     }
 
@@ -44,14 +44,14 @@ public class UserEventController {
     public EventFullDto patchEventById(@PathVariable("userId") Long userId,
                                        @PathVariable("eventId") Long eventId,
                                        @RequestBody @Valid PatchEventDto patchEventDto) {
-        log.info(String.format("Выполнен запрос PATCH /users/{userId}/events/{eventId} с данными userId = %d, eventId = %d и %s", userId, eventId, patchEventDto));
+        log.info("Выполнен запрос PATCH /users/{}/events/{} и телом {}", userId, eventId, patchEventDto);
         return userEventService.patchEventById(eventId, userId, patchEventDto);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<RequestDto> getEventRequests(@PathVariable("userId") Long userId,
                                              @PathVariable("eventId") Long eventId) {
-        log.info("");//ДОДЕЛАТЬ!
+        log.info("Выполнен запрос GET /users/{}/events/{}/requests", userId, eventId);
         return userEventService.getEventRequestsByUserId(eventId, userId);
     }
 
@@ -59,7 +59,7 @@ public class UserEventController {
     public UpdateRequestStatusResultDto patchEventRequests(@PathVariable("userId") Long userId,
                                                            @PathVariable("eventId") Long eventId,
                                                            @RequestBody PatchRequestDto patchRequestDto) {
-        log.info("");//ДОДЕЛАТЬ!
+        log.info("Выполнен запрос PATCH /users/{}/events/{}/requests и телом {}", userId, eventId, patchRequestDto);
         return userEventService.patchEventRequests(eventId, userId, patchRequestDto);
     }
 }

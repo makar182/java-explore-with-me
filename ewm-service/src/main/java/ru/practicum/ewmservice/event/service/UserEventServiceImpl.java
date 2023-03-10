@@ -8,6 +8,7 @@ import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
+import ru.practicum.ewmservice.event.mapper.LocationMapper;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.event.repository.EventRepository;
@@ -24,6 +25,7 @@ import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepository;
 import ru.practicum.statsclient.StatsClient;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -76,23 +78,25 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto addEvent(Long userId, NewEventDto newEventDto) {
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            log.info(String.format("Некорректная дата для события %s не существует!", newEventDto.getTitle()));
+            log.info("Некорректная дата для события {} не существует!", newEventDto.getTitle());
             throw new InvalidEventDateException(String.format("Некорректная дата для события %s не существует!", newEventDto.getTitle()));
         }
 
+        Location outerLocation = LocationMapper.toEntity(newEventDto.getLocation());
         Location location = locationRepository.findByLatAndLon(
-                newEventDto.getLocation().getLat(),
-                newEventDto.getLocation().getLon()).orElseGet(() -> locationRepository.saveAndFlush(newEventDto.getLocation()));
+                outerLocation.getLat(),
+                outerLocation.getLon()).orElseGet(() -> locationRepository.saveAndFlush(outerLocation));
 
         Category category = categoryRepository.findById(newEventDto.getCategory()).orElseThrow(() -> {
-            log.info(String.format("Категории %d не существует!", newEventDto.getCategory()));
+            log.info("Категории {} не существует!", newEventDto.getCategory());
             throw new CategoryNotExistsException(String.format("Категории %d не существует!", newEventDto.getCategory()));
         });
 
         User initiator = userRepository.findById(userId).orElseThrow(() -> {
-            log.info(String.format("Пользователя %d не существует!", userId));
+            log.info("Пользователя {} не существует!", userId);
             throw new UserNotExistsException(String.format("Пользователя %d не существует!", userId));
         });
 
@@ -115,7 +119,7 @@ public class UserEventServiceImpl implements UserEventService {
     @Override
     public EventFullDto getEventById(Long eventId, Long userId) {
         Event event = userEventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
@@ -131,14 +135,15 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto patchEventById(Long eventId, Long userId, PatchEventDto patchEventDto) {
         Event oldEvent = userEventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         if (patchEventDto.getEventDate() != null && patchEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            log.info(String.format("Некорректная дата для события %s не существует!", patchEventDto.getTitle()));
+            log.info("Некорректная дата для события {} не существует!", patchEventDto.getTitle());
             throw new InvalidEventDateException(String.format("Некорректная дата для события %s не существует!",
                     patchEventDto.getTitle()));
         }
@@ -164,9 +169,10 @@ public class UserEventServiceImpl implements UserEventService {
             oldEvent.setAnnotation(patchEventDto.getAnnotation());
         }
         if (patchEventDto.getLocation() != null) {
+            Location outerLocation = LocationMapper.toEntity(patchEventDto.getLocation());
             Location location = locationRepository.findByLatAndLon(
-                    patchEventDto.getLocation().getLat(),
-                    patchEventDto.getLocation().getLon()).orElseGet(() -> locationRepository.saveAndFlush(patchEventDto.getLocation()));
+                    outerLocation.getLat(),
+                    outerLocation.getLon()).orElseGet(() -> locationRepository.saveAndFlush(outerLocation));
             oldEvent.setLocation(location);
         }
         if (patchEventDto.getPaid() != null) {
@@ -221,14 +227,15 @@ public class UserEventServiceImpl implements UserEventService {
     }
 
     @Override
+    @Transactional
     public UpdateRequestStatusResultDto patchEventRequests(Long eventId, Long userId, PatchRequestDto patchRequestDto) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         if (!event.getInitiator().getId().equals(userId)) {
-            log.info(String.format("Данное событие не принадлежит пользователю %d!", userId));
+            log.info("Данное событие не принадлежит пользователю {}!", userId);
             throw new RequestException(String.format("Данное событие не принадлежит пользователю %d!", userId));
         }
 
@@ -263,16 +270,14 @@ public class UserEventServiceImpl implements UserEventService {
             }
         }
 
-        List<RequestDto> confirmedRequests = requests.stream()
+        List<Request> confirmedRequests = requests.stream()
                 .filter(x -> x.getStatus().equals(RequestStatus.CONFIRMED))
-                .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
 
-        List<RequestDto> rejectedRequests = requests.stream()
+        List<Request> rejectedRequests = requests.stream()
                 .filter(x -> x.getStatus().equals(RequestStatus.REJECTED))
-                .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
 
-        return new UpdateRequestStatusResultDto(confirmedRequests, rejectedRequests);
+        return RequestMapper.toUpdateRequestStatusResultDto(confirmedRequests, rejectedRequests);
     }
 }

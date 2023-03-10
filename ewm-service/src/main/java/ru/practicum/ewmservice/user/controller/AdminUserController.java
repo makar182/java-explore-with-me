@@ -23,21 +23,21 @@ public class AdminUserController {
     public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
                                   @RequestParam(name = "from", required = false, defaultValue = "0") int from,
                                   @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        log.info(String.format("Выполнен запрос GET /admin/users с данными ids = %s, from = %d и size = %d", ids, from, size));
+        log.info("Выполнен запрос GET /admin/users с параметрами ids = {}, from = {} и size = {}", ids, from, size);
         return adminUserService.getUsers(ids, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto addUser(@RequestBody @Valid NewUserDto user) {
-        log.info(String.format("Выполнен запрос POST /admin/users с данными %s", user));
+        log.info("Выполнен запрос POST /admin/users с телом {}", user);
         return adminUserService.addUser(user);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("userId") Long userId) {
-        log.info(String.format("Выполнен запрос DELETE /admin/users/{userId} с данными %d", userId));
+        log.info("Выполнен запрос DELETE /admin/users/{}", userId);
         adminUserService.deleteUser(userId);
     }
 }

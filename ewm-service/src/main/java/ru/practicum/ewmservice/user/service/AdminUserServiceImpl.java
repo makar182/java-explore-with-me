@@ -39,7 +39,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> {
-            log.info(String.format("Пользователь %d не существует!", userId));
+            log.info("Пользователь {} не существует!", userId);
             throw new UserNotExistsException(String.format("Пользователь %d не существует!", userId));
         });
         userRepository.deleteById(userId);

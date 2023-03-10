@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.request.mapper;
 
+import ru.practicum.ewmservice.event.dto.UpdateRequestStatusResultDto;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.request.dto.RequestDto;
 import ru.practicum.ewmservice.request.model.Request;
@@ -29,12 +30,31 @@ public class RequestMapper {
         return result;
     }
 
+    public static UpdateRequestStatusResultDto toUpdateRequestStatusResultDto(List<Request> confirmedRequests,
+                                                                              List<Request> rejectedRequests) {
+
+        List<UpdateRequestStatusResultDto.InnerRequestDto> confirmedOnes = new ArrayList<>();
+        List<UpdateRequestStatusResultDto.InnerRequestDto> rejectedOnes = new ArrayList<>();
+
+        for (Request confirmedRequest : confirmedRequests) {
+            confirmedOnes.add(new UpdateRequestStatusResultDto.InnerRequestDto(confirmedRequest));
+        }
+
+        for (Request rejectedRequest : rejectedRequests) {
+            rejectedOnes.add(new UpdateRequestStatusResultDto.InnerRequestDto(rejectedRequest));
+        }
+
+        return UpdateRequestStatusResultDto.builder()
+                .confirmedRequests(confirmedOnes)
+                .rejectedRequests(rejectedOnes)
+                .build();
+    }
+
     public static Request toEntity(Long userId, Long eventId) {
         return Request.builder()
                 .event(Event.builder().id(eventId).build())
                 .requester(User.builder().id(userId).build())
                 .created(LocalDateTime.now())
-                //.status(RequestStatus.PENDING)
                 .build();
     }
 }

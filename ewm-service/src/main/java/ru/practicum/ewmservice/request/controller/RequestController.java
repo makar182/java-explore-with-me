@@ -18,7 +18,7 @@ public class RequestController {
 
     @GetMapping
     public List<RequestDto> getRequestsByUserId(@PathVariable("userId") Long userId) {
-        //log.info(String.format("Выполнен запрос GET /admin/users с данными ids = %s, from = %d и size = %d", ids, from, size));
+        log.info("Выполнен запрос /users/{}/requests", userId);
         return requestService.getRequestsByUserId(userId);
     }
 
@@ -26,14 +26,14 @@ public class RequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public RequestDto addRequest(@PathVariable("userId") Long userId,
                                  @RequestParam(name = "eventId") Long eventId) {
-        //log.info(String.format("Выполнен запрос POST /admin/users с данными %s", user));
+        log.info("Выполнен запрос POST /users/{}/requests и параметром eventId = {}", userId, eventId);
         return requestService.addRequest(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
     public RequestDto cancelRequest(@PathVariable("userId") Long userId,
                                    @PathVariable("requestId") Long requestId) {
-        //log.info(String.format("Выполнен запрос DELETE /admin/users/{userId} с данными %d", userId));
+        log.info("Выполнен запрос DELETE /users/{}/requests/{}/cancel", userId, requestId);
         return requestService.cancelRequest(userId, requestId);
     }
 }

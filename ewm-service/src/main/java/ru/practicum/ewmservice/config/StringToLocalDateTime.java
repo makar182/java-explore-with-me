@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice.configs;
+package ru.practicum.ewmservice.config;
 
 import org.springframework.core.convert.converter.Converter;
 

@@ -47,7 +47,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto getCompilationById(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
-            log.info(String.format("Подборки %d не существует!", compId));
+            log.info("Подборки {} не существует!", compId);
             throw new CompilationNotExistsException(String.format("Подборки %d не существует!", compId));
         });
 

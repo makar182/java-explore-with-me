@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.enums.EventState;
-import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.user.model.User;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ public class EventFullDto {
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     private Long participantLimit;
     private Long confirmedRequests;

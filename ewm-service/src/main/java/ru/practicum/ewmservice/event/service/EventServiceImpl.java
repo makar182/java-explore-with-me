@@ -119,12 +119,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto getEventById(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         }
 

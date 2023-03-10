@@ -38,7 +38,9 @@ public class EventController {
                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                          @RequestParam(name = "from", required = false, defaultValue = "0") int from,
                                          HttpServletRequest request) {
-        log.info("");
+        log.info("Выполнен запрос GET /events с параметрами text = {}, categories = {}, paid = {}," +
+                        "rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort = {}, size = {}, from = {}",
+                text, categoryIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, size, from);
         statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventService.getEvents(text, categoryIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, size, from);
     }
@@ -46,7 +48,7 @@ public class EventController {
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable("id") Long eventId,
                                      HttpServletRequest request) {
-        log.info("");
+        log.info("Выполнен запрос GET /events/{} и телом {}", eventId, request);
         statsClient.hit(new HitRequestDto(app, request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().toString()));
         return eventService.getEventById(eventId);
     }

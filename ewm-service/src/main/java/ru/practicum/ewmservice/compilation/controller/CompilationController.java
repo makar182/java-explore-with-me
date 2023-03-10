@@ -21,13 +21,13 @@ public class CompilationController {
     public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) String pinned,
                                                 @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                 @RequestParam(name = "from", required = false, defaultValue = "0") int from) {
-        log.info("");
+        log.info("Выполнен запрос GET /compilations с параметрами pinned = {}, size = {} и from = {}", pinned, size, from);
         return compilationService.getCompilations(pinned, size, from);
     }
 
     @GetMapping("/{compId}")
     public CompilationDto getCompilationById(@PathVariable("compId") Long compId) {
-        log.info("");
+        log.info("Выполнен запрос GET /compilations/{}", compId);
         return compilationService.getCompilationById(compId);
     }
 }

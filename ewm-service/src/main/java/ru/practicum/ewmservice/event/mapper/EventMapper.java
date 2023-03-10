@@ -26,13 +26,11 @@ public class EventMapper {
                 .participantLimit(event.getParticipantLimit())
                 .requestModeration(event.getRequestModeration())
                 .category(new EventFullDto.UserEventResponseCategory(event.getCategory()))
-                .location(event.getLocation())
-                //.confirmedRequests(event.getConfirmedRequests())
+                .location(LocationMapper.toDto(event.getLocation()))
                 .createdOn(event.getCreatedOn())
                 .initiator(new EventFullDto.UserEventResponseInitiator(event.getInitiator()))
                 .publishedOn(event.getPublishedOn())
                 .state(event.getState())
-                //.views(event.getViews())
                 .build();
     }
 
@@ -58,7 +56,7 @@ public class EventMapper {
                 .participantLimit(newEventDto.getParticipantLimit())
                 .requestModeration(newEventDto.getRequestModeration())
                 .category(Category.builder().id(newEventDto.getCategory()).build())
-                .location(newEventDto.getLocation())
+                .location(LocationMapper.toEntity(newEventDto.getLocation()))
                 .build();
     }
 
@@ -86,9 +84,6 @@ public class EventMapper {
         }
         if (patchEventDto.getCategory() != null) {
             event.setCategory(Category.builder().id(patchEventDto.getCategory()).build());
-        }
-        if (patchEventDto.getLocation() != null) {
-            event.setLocation(patchEventDto.getLocation());
         }
         try {
             EventStateAction state = patchEventDto.getStateAction();

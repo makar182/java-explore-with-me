@@ -22,21 +22,21 @@ public class AdminCompilationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
-        log.info("");
+        log.info("Выполнен запрос POST /admin/compilations с телом {}", newCompilationDto);
         return adminCompilationService.addCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable("compId") Long compId) {
-        log.info("");
+        log.info("Выполнен запрос DELETE /admin/compilations/{}", compId);
         adminCompilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
     public CompilationDto patchCompilation(@PathVariable("compId") Long compId,
                                            @RequestBody NewCompilationDto newCompilationDto) {
-        log.info("");
+        log.info("Выполнен запрос PATCH /admin/compilations/{} и телом {}", compId, newCompilationDto);
         return adminCompilationService.patchCompilation(compId, newCompilationDto);
     }
 }

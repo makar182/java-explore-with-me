@@ -20,13 +20,13 @@ public class CategoryController {
     @GetMapping
     public List<CategoryDto> getCategories(@RequestParam(name = "from", required = false, defaultValue = "0") int from,
                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        log.info("");//ДОДЕЛАТЬ
+        log.info("Выполнен запрос GET /categories с параметрами from = {} и size = {}", from, size);
         return categoryService.getCategories(from, size);
     }
 
     @GetMapping("/{catId}")
     public CategoryDto getCategoryById(@PathVariable("catId") Long catId) {
-        log.info("");//ДОДЕЛАТЬ
+        log.info("Выполнен запрос GET /categories/{}", catId);
         return categoryService.getCategoryById(catId);
     }
 }

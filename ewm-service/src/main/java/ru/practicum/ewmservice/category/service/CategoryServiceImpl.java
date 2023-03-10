@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategoryById(Long catId) {
         Category category = categoryRepository.findById(catId).orElseThrow(() -> {
-            log.info(String.format("Категории %d не существует!", catId));
+            log.info("Категории {} не существует!", catId);
             throw new CategoryNotExistsException(String.format("Категории %d не существует!", catId));
         });
         return CategoryMapper.toDto(category);

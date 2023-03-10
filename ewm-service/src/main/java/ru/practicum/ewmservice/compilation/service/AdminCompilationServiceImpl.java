@@ -36,7 +36,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     public void deleteCompilation(Long compId) {
         compilationRepository.findById(compId).orElseThrow(() -> {
-            log.info(String.format("Подборки %d не существует!", compId));
+            log.info("Подборки {} не существует!", compId);
             throw new CompilationNotExistsException(String.format("Подборки %d не существует!", compId));
         });
         compilationRepository.deleteById(compId);
@@ -45,7 +45,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     public CompilationDto patchCompilation(Long compId, NewCompilationDto newCompilationDto) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
-            log.info(String.format("Подборки %d не существует!", compId));
+            log.info("Подборки {} не существует!", compId);
             throw new CompilationNotExistsException(String.format("Подборки %d не существует!", compId));
         });
 

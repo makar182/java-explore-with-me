@@ -8,6 +8,7 @@ import ru.practicum.ewmservice.event.dto.EventFullDto;
 import ru.practicum.ewmservice.event.dto.PatchEventDto;
 import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
+import ru.practicum.ewmservice.event.mapper.LocationMapper;
 import ru.practicum.ewmservice.event.model.Event;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +101,10 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto patchEventById(Long eventId, PatchEventDto patchEventDto) {
         Event oldEvent = eventRepository.findById(eventId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
@@ -132,9 +135,10 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
 
         if (patchEventDto.getLocation() != null) {
+            Location outerLocation = LocationMapper.toEntity(patchEventDto.getLocation());
             Location location = locationRepository.findByLatAndLon(
-                    patchEventDto.getLocation().getLat(),
-                    patchEventDto.getLocation().getLon()).orElseGet(() -> locationRepository.saveAndFlush(patchEventDto.getLocation()));
+                    outerLocation.getLat(),
+                    outerLocation.getLon()).orElseGet(() -> locationRepository.saveAndFlush(outerLocation));
             oldEvent.setLocation(location);
         }
 
@@ -143,7 +147,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (patchEventDto.getCategory() != null) {
             Category category = categoryRepository.findById(patchEventDto.getCategory())
                     .orElseThrow(() -> {
-                        log.info(String.format("Категории %d не существует!", patchEventDto.getCategory()));
+                        log.info("Категории {} не существует!", patchEventDto.getCategory());
                         throw new CategoryNotExistsException(String.format("Категории %d не существует!", patchEventDto.getCategory()));
                     });
             event.setCategory(category);

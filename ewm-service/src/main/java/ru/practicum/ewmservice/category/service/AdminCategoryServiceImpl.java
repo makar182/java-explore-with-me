@@ -32,7 +32,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public CategoryDto patchCategory(Long catId, NewCategoryDto newCategoryDto) {
         categoryRepository.findById(catId).orElseThrow(() -> {
-            log.info(String.format("Категории %d не существует!", catId));
+            log.info("Категории {} не существует!", catId);
             throw new CategoryNotExistsException(String.format("Категории %d не существует!", catId));
         });
         Category category = CategoryMapper.toEntity(newCategoryDto);

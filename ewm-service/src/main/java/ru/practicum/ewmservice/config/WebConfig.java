@@ -1,4 +1,4 @@
-package ru.practicum.ewmservice.configs;
+package ru.practicum.ewmservice.config;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;

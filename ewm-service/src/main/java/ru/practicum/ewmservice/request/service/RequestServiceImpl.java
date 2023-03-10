@@ -34,7 +34,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestDto addRequest(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
-            log.info(String.format("События %d не существует!", eventId));
+            log.info("События {} не существует!", eventId);
             throw new EventNotExistsException(String.format("События %d не существует!", eventId));
         });
 
