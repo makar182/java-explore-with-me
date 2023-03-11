@@ -4,6 +4,7 @@ drop table if exists requests;
 drop table if exists events;
 drop table if exists locations;
 drop table if exists categories;
+drop table if exists subscriptions;
 drop table if exists users;
 
 create table if not exists users

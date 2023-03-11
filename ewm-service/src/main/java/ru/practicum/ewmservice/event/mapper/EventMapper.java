@@ -25,10 +25,10 @@ public class EventMapper {
                 .eventDate(event.getEventDate())
                 .participantLimit(event.getParticipantLimit())
                 .requestModeration(event.getRequestModeration())
-                .category(new EventFullDto.UserEventResponseCategory(event.getCategory()))
-                .location(LocationMapper.toDto(event.getLocation()))
+                .category(new EventFullDto.InnerCategory(event.getCategory()))
+                .location(new EventFullDto.InnerLocation(event.getLocation()))
                 .createdOn(event.getCreatedOn())
-                .initiator(new EventFullDto.UserEventResponseInitiator(event.getInitiator()))
+                .initiator(new EventFullDto.InnerInitiator(event.getInitiator()))
                 .publishedOn(event.getPublishedOn())
                 .state(event.getState())
                 .build();
@@ -41,8 +41,8 @@ public class EventMapper {
                 .annotation(event.getAnnotation())
                 .paid(event.getPaid())
                 .eventDate(event.getEventDate())
-                .category(new EventShortDto.UserEventResponseCategory(event.getCategory()))
-                .initiator(new EventShortDto.UserEventResponseInitiator(event.getInitiator()))
+                .category(new EventShortDto.InnerCategory(event.getCategory()))
+                .initiator(new EventShortDto.InnerInitiator(event.getInitiator()))
                 .build();
     }
 

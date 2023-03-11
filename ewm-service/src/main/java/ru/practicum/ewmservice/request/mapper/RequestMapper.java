@@ -33,15 +33,15 @@ public class RequestMapper {
     public static UpdateRequestStatusResultDto toUpdateRequestStatusResultDto(List<Request> confirmedRequests,
                                                                               List<Request> rejectedRequests) {
 
-        List<UpdateRequestStatusResultDto.InnerRequestDto> confirmedOnes = new ArrayList<>();
-        List<UpdateRequestStatusResultDto.InnerRequestDto> rejectedOnes = new ArrayList<>();
+        List<UpdateRequestStatusResultDto.InnerRequest> confirmedOnes = new ArrayList<>();
+        List<UpdateRequestStatusResultDto.InnerRequest> rejectedOnes = new ArrayList<>();
 
         for (Request confirmedRequest : confirmedRequests) {
-            confirmedOnes.add(new UpdateRequestStatusResultDto.InnerRequestDto(confirmedRequest));
+            confirmedOnes.add(new UpdateRequestStatusResultDto.InnerRequest(confirmedRequest));
         }
 
         for (Request rejectedRequest : rejectedRequests) {
-            rejectedOnes.add(new UpdateRequestStatusResultDto.InnerRequestDto(rejectedRequest));
+            rejectedOnes.add(new UpdateRequestStatusResultDto.InnerRequest(rejectedRequest));
         }
 
         return UpdateRequestStatusResultDto.builder()
