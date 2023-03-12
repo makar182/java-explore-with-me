@@ -11,30 +11,30 @@ import ru.practicum.ewmservice.user.dto.UserDto;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{userId}/subscription")
+@RequestMapping("/users/{followerId}/subscription")
 @Slf4j
 @RequiredArgsConstructor
 public class SubscriptionController {
     private final SubscriptionService service;
 
-    @PostMapping
+    @PostMapping("/{followedId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addSubscription(@PathVariable("userId") Long userId,
-                                @RequestParam(name = "followed") List<Long> followedIds) {
-        log.info("Выполнен запрос POST /users/{}/subscription с данными followedIds = {}", userId, followedIds);
-        service.addSubscription(userId, followedIds);
+    public void addSubscription(@PathVariable("followerId") Long followerId,
+                                @PathVariable("followedId") Long followedId) {
+        log.info("Выполнен запрос POST /users/{}/subscription с данными followedIds = {}", followerId, followedId);
+        service.addSubscription(followerId, List.of(followedId));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{followedId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSubscription(@PathVariable("userId") Long userId,
-                                   @RequestParam(name = "followed") List<Long> followedIds) {
-        log.info("Выполнен запрос DELETE /users/{}/subscription с данными followedIds = {}", userId, followedIds);
-        service.deleteSubscription(userId, followedIds);
+    public void deleteSubscription(@PathVariable("followerId") Long followerId,
+                                   @PathVariable("followedId") Long followedId) {
+        log.info("Выполнен запрос DELETE /users/{}/subscription с данными followedIds = {}", followerId, followedId);
+        service.deleteSubscription(followerId, List.of(followedId));
     }
 
     @GetMapping
-    public List<SubscriptionEventDto> getEventsFromSubscriptions(@PathVariable("userId") Long userId,
+    public List<SubscriptionEventDto> getEventsFromSubscriptions(@PathVariable("followerId") Long userId,
                                                                  @RequestParam(name = "subscriptionIds",
                                                                   required = false) List<Long> subscriptionIds) {
         log.info("Выполнен запрос GET /users/{}/subscription с subscriptionIds = {}", userId, subscriptionIds);
@@ -42,13 +42,13 @@ public class SubscriptionController {
     }
 
     @GetMapping("/followers")
-    public List<UserDto> getFollowersByUserId(@PathVariable("userId") Long userId) {
+    public List<UserDto> getFollowersByUserId(@PathVariable("followerId") Long userId) {
         log.info("Выполнен запрос GET /users/{}/subscription/followers", userId);
         return service.getFollowersByUserId(userId);
     }
 
     @GetMapping("/followed")
-    public List<UserDto> getFollowedByUserId(@PathVariable("userId") Long userId) {
+    public List<UserDto> getFollowedByUserId(@PathVariable("followerId") Long userId) {
         log.info("Выполнен запрос GET /users/{}/subscription/followed", userId);
         return service.getFollowedByUserId(userId);
     }
