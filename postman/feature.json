@@ -87,6 +87,58 @@
       "response": []
     },
     {
+      "name": "Повторная подписка пользователя 1 на пользователя 2",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 409\", function () {\r",
+              "    pm.response.to.have.status(409);  \r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{uid1}}/subscription/{{uid2}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{uid1}}",
+            "subscription",
+            "{{uid2}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Подписка пользователя 2 на пользователя 1",
       "event": [
         {
@@ -104,6 +156,58 @@
             "exec": [
               "pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
               "    pm.response.to.have.status(201);  \r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{uid2}}/subscription/{{uid1}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{uid2}}",
+            "subscription",
+            "{{uid1}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Повторная подписка пользователя 2 на пользователя 1",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 409\", function () {\r",
+              "    pm.response.to.have.status(409);  \r",
               "});\r",
               ""
             ],
