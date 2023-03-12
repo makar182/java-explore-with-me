@@ -1,12 +1,12 @@
 package ru.practicum.statsdto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetStatsResponseDto {
     String app;
     String uri;
