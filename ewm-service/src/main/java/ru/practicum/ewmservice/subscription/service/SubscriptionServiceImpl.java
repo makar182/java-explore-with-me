@@ -35,7 +35,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public void addSubscription(Long followerId, List<Long> followedIds) {
 
         List<Subscription> savedSubscriptions = subscriptionRepository.findAllByFollower_IdAndFollowedIdIn(followerId, followedIds);
-        if(!savedSubscriptions.isEmpty()) {
+        if (!savedSubscriptions.isEmpty()) {
             log.info("Попытка создания дубликата подписки с данными followerId = {} и followedIds = {}", followerId, followedIds);
             throw new SubscriptionAlreadyExistsException("Попытка создания дубликата подписки");
         }
