@@ -51,6 +51,20 @@ public class ApiErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleSubscriptionAlreadyExistsException(final SubscriptionAlreadyExistsException e) {
+        log.error("Ошибка: " + e.getMessage());
+        return new ApiError(ApiErrorStatus.CONFLICT, "Подписка уже существует", e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleSubscriptionNotExistsException(final SubscriptionNotExistsException e) {
+        log.error("Ошибка: " + e.getMessage());
+        return new ApiError(ApiErrorStatus.CONFLICT, "Подписка не существует", e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleEmptyResultDataAccessException(final EmptyResultDataAccessException e) {
         log.error("Ошибка: " + e.getMessage());
